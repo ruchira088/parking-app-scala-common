@@ -1,0 +1,3 @@
+package com.myob.exceptions
+
+object IncorrectCredentialsException extends Exception
