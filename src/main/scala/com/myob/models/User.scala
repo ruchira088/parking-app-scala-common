@@ -3,7 +3,7 @@ package com.myob.models
 import org.joda.time.DateTime
 import play.api.libs.json.{JsObject, Json, OFormat}
 import com.myob.utils.GeneralUtils.generateUuid
-import com.myob.utils.JsonUtils.dateTimeObjectFormat
+import com.myob.utils.JsonFormatters._
 
 case class User(
    id: String,

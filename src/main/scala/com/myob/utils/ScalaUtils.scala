@@ -3,6 +3,7 @@ package com.myob.utils
 import com.myob.exceptions.EmptyOptionException
 
 import scala.concurrent.Future
+import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
 
 object ScalaUtils
@@ -20,4 +21,11 @@ object ScalaUtils
       value <- tryList.head
       rest <- trySequence(tryList.tail)
     } yield value :: rest
+
+  def convert[A, B](f: A => B)(value: A): Try[B] =
+    try {
+      Success(f(value))
+    } catch {
+      case NonFatal(throwable) => Failure(throwable)
+    }
 }

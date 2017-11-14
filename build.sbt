@@ -5,7 +5,7 @@ lazy val root = (project in file("."))
     inThisBuild(List(
       organization := "com.myob",
       scalaVersion := "2.12.4",
-      version      := "0.0.2"
+      version      := "0.0.6"
     )),
     name := "scala-common",
     libraryDependencies += play,

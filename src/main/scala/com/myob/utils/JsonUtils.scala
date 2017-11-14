@@ -1,34 +1,27 @@
 package com.myob.utils
 
 import com.myob.exceptions.JsonDeserializationException
-import org.joda.time.DateTime
 import play.api.libs.json._
 import play.api.mvc.Request
 
+import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
 
 object JsonUtils
 {
-  implicit def dateTimeObjectFormat: Format[DateTime] = new Format[DateTime]
-  {
-    override def reads(jsValue: JsValue): JsResult[DateTime] = jsValue match
-    {
-      case JsString(string) =>
-        ParseUtils.dateTime(string)
-          .fold(
-            throwable => JsError(throwable.getMessage),
-            JsSuccess(_)
-          )
-      case _ => JsError()
-    }
-
-    override def writes(dateTime: DateTime): JsValue =
-      JsString(dateTime.toString)
-  }
-
-  def deserialize[A](implicit request: Request[JsValue], reads: Reads[A]): Try[A] =
-    request.body.validate[A].fold[Try[A]](
+  def deserialize[A](jsValue: JsValue)(implicit reads: Reads[A]): Try[A] =
+    jsValue.validate.fold[Try[A]](
       validationErrors => Failure(JsonDeserializationException(validationErrors)),
       Success(_)
     )
+
+  def deserialize[A](implicit request: Request[JsValue], reads: Reads[A]): Try[A] =
+    deserialize[A](request.body)
+
+  def parse(string: String): Try[JsValue] =
+    try {
+      Success(Json.parse(string))
+    } catch {
+      case NonFatal(throwable) => Failure(throwable)
+    }
 }
